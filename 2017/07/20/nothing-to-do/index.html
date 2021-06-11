@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://example.com').hostname,
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.7.1',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="​    最近也在一直瞎折腾，至于到底在折腾啥，我得好好想想才能写出来。    为什么说自己在瞎折腾呢？因为也不知道自己在忙啥，也不知道自己为什么忙，总之处于忙的这一种状态就是了。有人说忙就对了，总比你闲着啥也不干强点吧，我觉得也未必。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="闲来无事瞎折腾">
+<meta property="og:url" content="http://example.com/2017/07/20/nothing-to-do/index.html">
+<meta property="og:site_name" content="Utokato&#39;s Notes">
+<meta property="og:description" content="​    最近也在一直瞎折腾，至于到底在折腾啥，我得好好想想才能写出来。    为什么说自己在瞎折腾呢？因为也不知道自己在忙啥，也不知道自己为什么忙，总之处于忙的这一种状态就是了。有人说忙就对了，总比你闲着啥也不干强点吧，我觉得也未必。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-07-20T12:03:22.000Z">
+<meta property="article:modified_time" content="2021-06-11T11:37:40.737Z">
+<meta property="article:author" content="Utokato">
+<meta property="article:tag" content="随笔杂谈">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2017/07/20/nothing-to-do/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>闲来无事瞎折腾 | Utokato's Notes</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Utokato's Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">18</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">11</span></a>
+
+  </li>
+        <li class="menu-item menu-item-书签">
+
+    <a href="/bookmark/" rel="section"><i class="fa fa-fw fa-bookmark"></i>书签</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/Utokato" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2017/07/20/nothing-to-do/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Utokato">
+      <meta itemprop="description" content="The future's not ours to see">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Utokato's Notes">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          闲来无事瞎折腾
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-07-20 20:03:22" itemprop="dateCreated datePublished" datetime="2017-07-20T20:03:22+08:00">2017-07-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-06-11 19:37:40" itemprop="dateModified" datetime="2021-06-11T19:37:40+08:00">2021-06-11</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>​    最近也在一直瞎折腾，至于到底在折腾啥，我得好好想想才能写出来。<br>    为什么说自己在瞎折腾呢？因为也不知道自己在忙啥，也不知道自己为什么忙，总之处于忙的这一种状态就是了。有人说忙就对了，总比你闲着啥也不干强点吧，我觉得也未必。</p>
+<span id="more"></span> 
+
+<p>​    来到这个地方已经马上就一年了，而自己现在的心态呢，大致如《口技》一文中的那句名言相似，急欲先走。如我这般心态的人估计不在少数，如我这般一天和尚一天钟的也不在少数，我想可能是满满的激情已经被消磨殆尽了，剩下的只是一些纯功利性质的约束了。如若失去了这点约束，这种想法便更加的猖狂和肆无忌惮。难道与瞎忙活有什么关系吗？答案是必然的。我也不想文绉绉的去思考这些无聊的问题了，想得越多就越是觉得无聊。</p>
+<h3 id="人的思维性"><a href="#人的思维性" class="headerlink" title="人的思维性"></a>人的思维性</h3><p>​    当然，除了给别人瞎忙活，瞎折腾以外，自己也在瞎折腾。但是自己觉得这点瞎折腾，至少能提起一点兴趣，就像我以前也会对专业课感兴趣一样。然而，后来发现，我正从事的专业，确实有点过于老气横秋，动不动就是深不可测的理论，我已经“无福”消受了，只得另谋出路了。<br>    我是不反感计算机的，至少不反感坐着工作。要知道，我的这个职业将来免不了很多体力活，而我似乎就是这么一个懒人，懒得动弹。所以，我觉得自己其实可以自己去学习一点有关于计算机科学(CS)的知识，姑且就认为我学的是CS吧。其实还是相差甚远的，但也算是开始慢慢的薅到了九牛的一毛吧。这里确实的感谢师兄，也是他最早让我去接触一点编程之类的东西。去年刚刚来到这个实验室的时候，师兄就提议说，如果不反感的话，可以试着去学习学习Python，作为入门语言，也算是对新手比较友好的吧。<br>    然后就断断续续的学习，基本上把Python的基础学习了一遍。然后，就没有然后了。毕竟那个时候，热情和激情都还在专业这边，无论是X射线、分析测试、力学性能等等，我还是蛮感兴趣了，自己也学到不少的东西，也算是一点点谈资吧。只是后来也算认识到一点东西，尤其是认识的自己自身的不足，以及对于学术茫茫浩瀚之大海一种迷茫，遂决定扭转了航向。想着想着，就觉得可以把之前学的Python捡起来，当然也一次为契机重新审视自己，思考自己的下一段“旅程”。<br>    所以说人呀，毕竟还是具有思维的物种，从思维开始发生潜移默化的那时起，之后的事情就变得“瞎忙活”起来。但是，为了能够使自己顺利的毕业，还是得兼顾自己专业的一些东西。这样一来，为了实验瞎忙，为了自己也瞎忙，也算是不亦乐乎吧。</p>
+<h3 id="大致的航向"><a href="#大致的航向" class="headerlink" title="大致的航向"></a>大致的航向</h3><p>​    重新拾起Python，其实还是蛮亲切的，毕竟期间还是使用Python写了一点点小东西来处理一点数据。然后就是在网上看些资料，看看过来人的一些推荐和建议。慢慢的也算是有了一些些自己的思路吧，也就以此来记录吧。因为没有系统的学习过关于计算机科学的专业知识，难免会遇到很多的障碍，一来二去，觉得也挺心烦的，所以得去了解一些系统的计算机科学的知识，在网易云课堂里面有MIT和Havard的两门课，应该静下心来认真的学习。期间可以用心的去维护这个博客，然后使这个博客更加的健壮和多元美观。断断续续，林林总总的去学习相关的知识。以一条为主线，辅以不同零碎的知识来补充，慢慢学习，切莫急功近利。<br>    最后，一切安好吧。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E9%9A%8F%E7%AC%94%E6%9D%82%E8%B0%88/" rel="tag"># 随笔杂谈</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2017/08/18/hexo-study-records/" rel="next" title="Hexo学习记录">
+      Hexo学习记录 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%BA%E7%9A%84%E6%80%9D%E7%BB%B4%E6%80%A7"><span class="nav-number">1.</span> <span class="nav-text">人的思维性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%A7%E8%87%B4%E7%9A%84%E8%88%AA%E5%90%91"><span class="nav-number">2.</span> <span class="nav-text">大致的航向</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Utokato"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Utokato</p>
+  <div class="site-description" itemprop="description">The future's not ours to see</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Utokato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Utokato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:utokato@outlook.com" title="E-Mail → mailto:utokato@outlook.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-cube"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Utokato</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

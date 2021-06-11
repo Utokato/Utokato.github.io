@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://example.com').hostname,
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.7.1',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="当使用 JDK8 中的 lambda 表达式时，在 lambda 表达式中使用一个外部的变量，需要这个变量是被 final 修饰的，或者事实上满足final，如下代码所示： 12345678public static void main(String[] args) &amp;#123;    String str &#x3D; &quot;now: &quot;;    &#x2F;&#x2F; str &#x3D; &quot;next:">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从一个编译异常开始，聊一聊 Java 中的传参">
+<meta property="og:url" content="http://example.com/2020/02/03/pass-value-or-reference-in-java/index.html">
+<meta property="og:site_name" content="Utokato&#39;s Notes">
+<meta property="og:description" content="当使用 JDK8 中的 lambda 表达式时，在 lambda 表达式中使用一个外部的变量，需要这个变量是被 final 修饰的，或者事实上满足final，如下代码所示： 12345678public static void main(String[] args) &amp;#123;    String str &#x3D; &quot;now: &quot;;    &#x2F;&#x2F; str &#x3D; &quot;next:">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://utokato-1257116569.cos.ap-chengdu.myqcloud.com/GitHub%27Pages/PassValueOrReferenceInJava/1567405192746.png">
+<meta property="og:image" content="https://utokato-1257116569.cos.ap-chengdu.myqcloud.com/GitHub%27Pages/PassValueOrReferenceInJava/1567405245048.png">
+<meta property="og:image" content="https://utokato-1257116569.cos.ap-chengdu.myqcloud.com/GitHub%27Pages/PassValueOrReferenceInJava/1567409500259.png">
+<meta property="og:image" content="https://utokato-1257116569.cos.ap-chengdu.myqcloud.com/GitHub%27Pages/PassValueOrReferenceInJava/1567409688051.png">
+<meta property="og:image" content="https://utokato-1257116569.cos.ap-chengdu.myqcloud.com/GitHub%27Pages/PassValueOrReferenceInJava/1567411506002.png">
+<meta property="og:image" content="https://utokato-1257116569.cos.ap-chengdu.myqcloud.com/GitHub%27Pages/PassValueOrReferenceInJava/1567412475138.png">
+<meta property="og:image" content="https://utokato-1257116569.cos.ap-chengdu.myqcloud.com/GitHub%27Pages/PassValueOrReferenceInJava/1567414164564.png">
+<meta property="og:image" content="https://utokato-1257116569.cos.ap-chengdu.myqcloud.com/GitHub%27Pages/PassValueOrReferenceInJava/1567414457174.png">
+<meta property="og:image" content="https://utokato-1257116569.cos.ap-chengdu.myqcloud.com/GitHub%27Pages/PassValueOrReferenceInJava/1567409716891.png">
+<meta property="og:image" content="https://utokato-1257116569.cos.ap-chengdu.myqcloud.com/GitHub%27Pages/PassValueOrReferenceInJava/1567417107723.png">
+<meta property="og:image" content="https://utokato-1257116569.cos.ap-chengdu.myqcloud.com/GitHub%27Pages/PassValueOrReferenceInJava/1567417324001.png">
+<meta property="article:published_time" content="2020-02-03T12:46:51.000Z">
+<meta property="article:modified_time" content="2021-06-11T11:37:40.737Z">
+<meta property="article:author" content="Utokato">
+<meta property="article:tag" content="学习记录">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="C#">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://utokato-1257116569.cos.ap-chengdu.myqcloud.com/GitHub%27Pages/PassValueOrReferenceInJava/1567405192746.png">
+
+<link rel="canonical" href="http://example.com/2020/02/03/pass-value-or-reference-in-java/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>从一个编译异常开始，聊一聊 Java 中的传参 | Utokato's Notes</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Utokato's Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">18</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">11</span></a>
+
+  </li>
+        <li class="menu-item menu-item-书签">
+
+    <a href="/bookmark/" rel="section"><i class="fa fa-fw fa-bookmark"></i>书签</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/Utokato" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/02/03/pass-value-or-reference-in-java/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Utokato">
+      <meta itemprop="description" content="The future's not ours to see">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Utokato's Notes">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          从一个编译异常开始，聊一聊 Java 中的传参
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-02-03 20:46:51" itemprop="dateCreated datePublished" datetime="2020-02-03T20:46:51+08:00">2020-02-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-06-11 19:37:40" itemprop="dateModified" datetime="2021-06-11T19:37:40+08:00">2021-06-11</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>当使用 JDK8 中的 lambda 表达式时，在 lambda 表达式中使用一个外部的变量，需要这个变量是被 final 修饰的，或者事实上满足final，如下代码所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    String str = <span class="string">&quot;now: &quot;</span>;</span><br><span class="line">    <span class="comment">// str = &quot;next: &quot;; </span></span><br><span class="line">    <span class="comment">// Variable used in lambda expression should be final or effectively final</span></span><br><span class="line">    Consumer&lt;LocalDateTime&gt; consumer = s -&gt; </span><br><span class="line">        System.out.println(Thread.currentThread().getName() + <span class="string">&quot; -&gt; &quot;</span> + str + s);</span><br><span class="line">    consumer.accept(LocalDateTime.now());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>虽然没有手动的使用 final 修饰 str 变量，但它确确实实是一个不能修改的变量，这是由于虚拟机进行了优化，可以让程序员不去使用 final 修饰该变量。但如果手动的去修改 str ，就会出现编译异常，详细内容是 <code>Variable used in lambda expression should be final or effectively final</code>，为什么会出现这个编译的异常？这是由于虚拟机为了保证 lambda 表达式中操作变量的安全性，如何来理解这个安全性呢？在深刻回答这个问题之前，不妨先来讨论一下 Java 中的数据类型和传值的问题。</p>
+<blockquote>
+<p>不止是 lambda 表达式中使用的变量需要是final修饰的，JDK8 以前的匿名内部类中使用的外部变量，也是需要final修饰的</p>
+</blockquote>
+<p>为了更加清楚的描述和解释这些问题，将结合 C# 中相关的内容来一起说明。</p>
+<span id="more"></span> 
+
+<h2 id="C-中数据类型及派生体系"><a href="#C-中数据类型及派生体系" class="headerlink" title="C# 中数据类型及派生体系"></a>C# 中数据类型及派生体系</h2><p><img src="https://utokato-1257116569.cos.ap-chengdu.myqcloud.com/GitHub%27Pages/PassValueOrReferenceInJava/1567405192746.png" alt="1567405192746"></p>
+<h2 id="Java-中数据类型及派生体系"><a href="#Java-中数据类型及派生体系" class="headerlink" title="Java 中数据类型及派生体系"></a>Java 中数据类型及派生体系</h2><p><img src="https://utokato-1257116569.cos.ap-chengdu.myqcloud.com/GitHub%27Pages/PassValueOrReferenceInJava/1567405245048.png" alt="1567405245048"></p>
+<p>从上面的两幅图中，可以清晰的看到两种语言中的数据类型和派生体系及其相似，可能在值类型的划分有一些细小的区别，但无伤大雅，不妨碍解释今天的问题。</p>
+<p>有了数据类型，就可以基于不同的数据类型声明不同的变量，也可以使用这些变量来参与一些计算，这里就涉及到了方法(函数)的使用，首先来看一个简单方法声明和定义。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">someMethod</span><span class="params">(<span class="keyword">int</span> num, String name, Object instance)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// do something ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在上面的方法中，有三个参数，专业称为<strong>形参</strong>，也就是定义方法时使用的形式参数。怎么理解这个形参呢？可以理解为一个占位符。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Object obj = <span class="keyword">new</span> Object();</span><br><span class="line">someMethod(<span class="number">1</span>,<span class="string">&quot;lma&quot;</span>,obj);</span><br></pre></td></tr></table></figure>
+
+<p>只有在该方法真正被调用时，传递进来的参数才有意义，调用方法时传递的参数被称为<strong>实参</strong>。如上面的 <code>1,&quot;lma&quot;,obj</code> 就是实参。</p>
+<p>了解了上面的知识，需要接着讨论在方法调用时，到底传递的是什么？想必都听过 Java 中都是传值的，那如何理解这个结论呢？这就需要结合一下 C# 中的相关部分知识，因为在 C# 中，既可以传递值，也可以传递引用。</p>
+<blockquote>
+<p>什么是值，什么是引用？需要一些关于虚拟机中变量在堆栈上分配的知识，简单而言，基本数据类型直接会在栈上分配；引用数据类型会在堆中分配这个对象，然后在栈上分配一个变量保存着堆中对象的地址值。举个例子，比如说有一个小孩牵着一个气球，气球就好比是堆中的对象，小孩就好比栈上的变量，牵着的线就好比引用。</p>
+<p><img src="https://utokato-1257116569.cos.ap-chengdu.myqcloud.com/GitHub%27Pages/PassValueOrReferenceInJava/1567409500259.png" alt="1567409500259"></p>
+</blockquote>
+<h2 id="C-中传参的方式"><a href="#C-中传参的方式" class="headerlink" title="C# 中传参的方式"></a>C# 中传参的方式</h2><p><img src="https://utokato-1257116569.cos.ap-chengdu.myqcloud.com/GitHub%27Pages/PassValueOrReferenceInJava/1567409688051.png" alt="1567409688051"></p>
+<p>在 C# 中是不仅可以传值，也可以传递引用，所以就表现出了上面的传参方式。</p>
+<h3 id="传值-方式"><a href="#传值-方式" class="headerlink" title="传值 方式"></a>传值 方式</h3><ul>
+<li><strong>值类型</strong></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">// 定义一个方法，形参是一个值类型</span><br><span class="line">static void ChangeNum(int inner)</span><br><span class="line">&#123;</span><br><span class="line">     inner = inner + 1; // 参数的作用域仅仅在这个方法内部，当方法弹栈后，就失效了</span><br><span class="line">&#125;</span><br><span class="line">// 在main方法中调用</span><br><span class="line">static void Main(string[] args)</span><br><span class="line">&#123;</span><br><span class="line">     int outer = 10;</span><br><span class="line">     ChangeNum(outer);</span><br><span class="line">     Console.WriteLine(outer); // 10</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li><strong>引用类型 - 在方法内部创建新的对象</strong></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">// 定义一个方法，形参是一个引用类型，自定义Teacher，包含了 Name 和 ID 两个属性</span><br><span class="line">static void ChangeTeacher(Teacher t)</span><br><span class="line">&#123;</span><br><span class="line">    t = new Teacher() &#123; ID = 2001, Name = &quot;t_inner_first&quot; &#125;;</span><br><span class="line">    t.Name = &quot;t_inner_last&quot;;</span><br><span class="line">    t.ID = 3001;</span><br><span class="line">    // 由于在方法内部新建了一个对象，所有的操作都是基于方法体内部的新对象</span><br><span class="line">    // 所以内部的操作对方法外的对象是没有任何影响的</span><br><span class="line">&#125;</span><br><span class="line">// 在main方法中调用</span><br><span class="line">static void Main(string[] args)</span><br><span class="line">&#123;</span><br><span class="line">     Teacher tOuter = new Teacher() &#123; ID = 1001, Name = &quot;t_outer&quot; &#125;;</span><br><span class="line">     ChangeTeacher(tOuter);</span><br><span class="line">     Console.WriteLine(tOuter.Name); // t_outer  </span><br><span class="line">&#125;</span><br><span class="line">// ** 这种方式极少或几乎不会使用 **</span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li><strong>引用类型 - 在方法内部不创建新的对象</strong></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">// 定义一个方法，形参是一个引用类型，自定义Teacher，包含了 Name 和 ID 两个属性</span><br><span class="line">static void ChangeTeacher(Teacher t)</span><br><span class="line">&#123;</span><br><span class="line">    t.Name = &quot;t_inner&quot;;</span><br><span class="line">    t.ID = 2001;</span><br><span class="line">    // 将实参的地址值直接传入，所有的操作都是基于一个相同的对象，方法执行后产生副作用</span><br><span class="line">    // 即改变对象原来的属性</span><br><span class="line">&#125;</span><br><span class="line">// 在main方法中调用</span><br><span class="line">static void Main(string[] args)</span><br><span class="line">&#123;</span><br><span class="line">     Teacher tOuter = new Teacher() &#123; ID = 1001, Name = &quot;t_outer&quot; &#125;;</span><br><span class="line">     ChangeTeacher(tOuter);</span><br><span class="line">     Console.WriteLine(tOuter.Name); //  t_inner</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>再次通过模拟内存中方法调用的示意图来展示这个过程，由于在方法调用前，tOuter 已经与堆内存中实例的对象建立的关系(通过地址值)，当方法调用时，又将这个这个地址值作为实参传递到方法的内部，所以方法内部的操作都是基于同一个对象，所以对于对象的修改，会直接产生副作用。不要觉得副作用就不好，其实在编码的过程中，绝大多数都是使用的这种方式。顺便说一句，Java 不支持传引用的方式，所以仅支持这种方式。</p>
+<p><img src="https://utokato-1257116569.cos.ap-chengdu.myqcloud.com/GitHub%27Pages/PassValueOrReferenceInJava/1567411506002.png" alt="1567411506002"></p>
+<h3 id="传引用-方式"><a href="#传引用-方式" class="headerlink" title="传引用 方式"></a>传引用 方式</h3><ul>
+<li><strong>值类型</strong></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">// 特别注意形参前面的 ref </span><br><span class="line">static void ChangeNum(ref int inner)</span><br><span class="line">&#123;</span><br><span class="line">    inner = inner + 1;</span><br><span class="line">    // 这次运行后，会真真实实的产生副作用</span><br><span class="line">&#125;</span><br><span class="line">// 在main方法中调用</span><br><span class="line">static void Main(string[] args)</span><br><span class="line">&#123;</span><br><span class="line">     int outer = 10;</span><br><span class="line">     ChangeNum(outer);</span><br><span class="line">     Console.WriteLine(outer); // 11</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>不是很好理解，为什么加上一个 <code>ref</code> 后，就真实地产生了副作用呢？再次通过模拟内存中方法调用的示意图来展示这个过程。</p>
+<p><img src="https://utokato-1257116569.cos.ap-chengdu.myqcloud.com/GitHub%27Pages/PassValueOrReferenceInJava/1567412475138.png" alt="1567412475138"></p>
+<p>可能是出于这样问题的考虑，Java 中彻底封死了这条路，所以在 Java 中是不能实现这样的操作。</p>
+<ul>
+<li><strong>引用类型 - 在方法内部创建新的对象</strong></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">// 特别注意形参前面的 ref </span><br><span class="line">static void ChangeTeacher(ref Teacher t)</span><br><span class="line">&#123;</span><br><span class="line">    t = new Teacher() &#123; ID = 2001, Name = &quot;t_inner_first&quot; &#125;;</span><br><span class="line">    t.Name = &quot;t_inner_last&quot;;</span><br><span class="line">    t.ID = 3001;</span><br><span class="line">    // 由于在方法内部新建了一个对象，所有的操作都是基于方法体内部的新对象</span><br><span class="line">    // 所以内部的操作对方法外的对象是没有任何影响的</span><br><span class="line">&#125;</span><br><span class="line">// 在main方法中调用</span><br><span class="line">static void Main(string[] args)</span><br><span class="line">&#123;</span><br><span class="line">     Teacher tOuter = new Teacher() &#123; ID = 1001, Name = &quot;t_outer&quot; &#125;;</span><br><span class="line">     ChangeTeacher(tOuter);</span><br><span class="line">     Console.WriteLine(tOuter.Name); // t_outer  </span><br><span class="line">&#125;</span><br><span class="line">// ** 这种方式极少或几乎不会使用 **</span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li><strong>引用类型 - 在方法内部不创建新的对象</strong></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">// 特别注意形参前面的 ref </span><br><span class="line">static void ChangeTeacher(ref Teacher t)</span><br><span class="line">&#123;</span><br><span class="line">    t.Name = &quot;t_inner&quot;;</span><br><span class="line">    t.ID = 2001;</span><br><span class="line">    // 将栈内存中的值传递给到了方法中，由于栈内存的值本质上就是对象的引用</span><br><span class="line">    // 所以相当于方法内部的再次拿到了对象的引用，所有操作本质上都是基于一个对象，所有依然产生了副作用</span><br><span class="line">    // 与上面传值的方式效果一样</span><br><span class="line">    // 即改变对象原来的属性</span><br><span class="line">&#125;</span><br><span class="line">// 在main方法中调用</span><br><span class="line">static void Main(string[] args)</span><br><span class="line">&#123;</span><br><span class="line">    Teacher tOuter = new Teacher() &#123; ID = 1001, Name = &quot;t_outer&quot; &#125;;</span><br><span class="line">    // tOuter = new Teacher() &#123; ID = 1002, Name = &quot;t_outer_last&quot; &#125;;</span><br><span class="line">    ChangeTeacher(tOuter);</span><br><span class="line">    Console.WriteLine(tOuter.Name); //  t_inner</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可能会产生这样的疑问，既然和上面传值时的效果一样，那这样做的意义在哪里呢？同样地，还是模拟内存中方法调用的示意图来说明。</p>
+<p>当首次调用 <code>Teacher tOuter = new Teacher() &#123; ID = 1001, Name = &quot;t_outer&quot; &#125;</code> 时，栈内存中保存了对象实例的堆内存地址，如果调用方法的形参没有 <code>ref</code> 的修饰，调用方法就将堆内存中该对象的地址传递到方法中，正如上面所说的那样。假如在方法调用前执行了 <code>tOuter = new Teacher() &#123; ID = 1002, Name = &quot;t_outer_last&quot; &#125;</code> ，此时传递的就新对象的堆内存地址；</p>
+<p><img src="https://utokato-1257116569.cos.ap-chengdu.myqcloud.com/GitHub%27Pages/PassValueOrReferenceInJava/1567414164564.png" alt="1567414164564"></p>
+<p>如果调用方法的形参使用了 <code>ref</code> 修饰，调用方法传参就是直接将栈内存中的引用地址传递到方法内部，方法内部通过引用地址也可以指向堆内存中的实例对象，所有最终可能起到是相同的副作用，但是内存中运行的模型是不一致的。Java 中是不支持这种方式的，当然这种方式在 C# 中使用的几率也不是很多。</p>
+<p><img src="https://utokato-1257116569.cos.ap-chengdu.myqcloud.com/GitHub%27Pages/PassValueOrReferenceInJava/1567414457174.png" alt="1567414457174"></p>
+<h2 id="Java-中传参的方式"><a href="#Java-中传参的方式" class="headerlink" title="Java 中传参的方式"></a>Java 中传参的方式</h2><p><img src="https://utokato-1257116569.cos.ap-chengdu.myqcloud.com/GitHub%27Pages/PassValueOrReferenceInJava/1567409716891.png" alt="1567409716891"></p>
+<p>在 Java 中只允许传值，所以相当于是 C# 传参方式的一个子集。</p>
+<p>通过上面几种方式的描述，基本上了解了传参过程中一些基本知识。Java 只支持传值的方式，在上面 C# 的示例中也展示了，如果使用 Java 代码实现基本上也是一致的。</p>
+<h2 id="回归正题"><a href="#回归正题" class="headerlink" title="回归正题"></a>回归正题</h2><p>上面聊了很多关于 Java 和 C# 中的传值方式，但这些内容与开篇所说的异常又有什么关系呢？</p>
+<p>开篇使用的例子中，当 lambda 中调用了一个外部的变量时，我们再次去修改这个变量的值时，就会出现编译异常。<code>String</code> 类型的例子可能不是很好说明，所以通过接下来的例子来解释。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    List&lt;LocalDateTime&gt; localDateTimes = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    <span class="comment">// localDateTimes = new LinkedList&lt;&gt;();</span></span><br><span class="line">    Consumer&lt;LocalDateTime&gt; consumer = dateTime -&gt; localDateTimes.add(dateTime);</span><br><span class="line">    consumer.accept(LocalDateTime.now());</span><br><span class="line">    localDateTimes.forEach(System.out::println);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如上面的代码中，首先创建了一个 <code>LocalDateTime</code> 的 list ，然后在 lambda 中添加具体的时间，如果修改这个 list 为 <code>LinkedList</code> ，就会重新出现 <code>Variable used in lambda expression should be final or effectively final</code> 。出现这个异常是因为，虚拟机认为这样的操作是危险的，可能会出现问题。</p>
+<p>下面的描述可能有失偏颇，慎重理解。</p>
+<p>Java 虚拟机在执行代码顺序时，并不是所想象的那样去顺序执行，内部参杂着很多的即时优化，仅仅保证了最终的一致性，并不保证过程中的按部就班。以 <code>List&lt;LocalDateTime&gt; localDateTimes = new ArrayList&lt;&gt;();</code> 为例子，分为了三个动作：声明变量，新建 list 对象，建立变量与对象之间的引用关系，这三个动作的执行顺序并没有得到虚拟机的保证，如果此时执行 <code>localDateTimes = new LinkedList&lt;&gt;();</code> ，又包含了两个动作：新建对象，建立引用关系；接着就到了 lambda 表达式的内部，此时需要 <code>localDateTimes</code> 变量指向的实例对象来进行 <code>add</code> 操作，由于上面包含了<strong>两个</strong>建立引用关系的动作，真正 lambda 中使用的是哪一个 list 实例，并不清晰，可能出现混乱。比如，向 lambda 中传递了 <code>ArrayList</code>，后面 <code>localDateTimes</code> 又指向了 <code>LinkedList</code>，导致在 lambda 中真实操作的对象可能不是我们预想的。</p>
+<p><img src="https://utokato-1257116569.cos.ap-chengdu.myqcloud.com/GitHub%27Pages/PassValueOrReferenceInJava/1567417107723.png" alt="1567417107723"></p>
+<p>如果 Java 能传递引用，就可以有效的规避这个问题，如下图所示：</p>
+<p><img src="https://utokato-1257116569.cos.ap-chengdu.myqcloud.com/GitHub%27Pages/PassValueOrReferenceInJava/1567417324001.png" alt="1567417324001"></p>
+<p>Java 中的传参方式只能是传递，当变量为值类型时，传递的是栈内存中的变量直接包含的值；当变量为引用类型时，栈中的变量与堆中的实例之间建立了映射关系，真正传递的是，堆中实例对象的内存地址。基于这样的事实，以及虚拟机对于代码执行的优化，可能在一些情形下出现异常。所以为了解决这些问题，虚拟机直接在编译期就会报出这些错，提示程序员这样写不能保证正确性，需要修改编码的方式。</p>
+<blockquote>
+<p>对于最后面的解释，可能有失偏颇，需要继续学习 Java 语言层面和虚拟机层面的知识，才能对该知识点有更加深刻和正确的理解。</p>
+</blockquote>
+<blockquote>
+<p>理解字节码，Java 是率先使用字节码的语言，正是通过字节码实现了跨平台，后来很多的语音都效仿了这种模式。Google 起初设计 V8 引擎时，是将 JavaScript 直接编译成机器码，后来由于各种各样的问题，也拥抱了字节码，更多的故事可以参看 <a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/2-ztm5A0W8mDtCrzH_cX-g">字节码万岁！！！</a></p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" rel="tag"># 学习记录</a>
+              <a href="/tags/Java/" rel="tag"># Java</a>
+              <a href="/tags/C/" rel="tag"># C#</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/10/19/spring-run-with-or-without-external-tomcat/" rel="prev" title="Spring Web 如何在 Tomcat 中启动">
+      <i class="fa fa-chevron-left"></i> Spring Web 如何在 Tomcat 中启动
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/02/20/java-log-encrypt-in-logback/" rel="next" title="Java 日志加密处理">
+      Java 日志加密处理 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#C-%E4%B8%AD%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%8F%8A%E6%B4%BE%E7%94%9F%E4%BD%93%E7%B3%BB"><span class="nav-number">1.</span> <span class="nav-text">C# 中数据类型及派生体系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-%E4%B8%AD%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%8F%8A%E6%B4%BE%E7%94%9F%E4%BD%93%E7%B3%BB"><span class="nav-number">2.</span> <span class="nav-text">Java 中数据类型及派生体系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#C-%E4%B8%AD%E4%BC%A0%E5%8F%82%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="nav-number">3.</span> <span class="nav-text">C# 中传参的方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%A0%E5%80%BC-%E6%96%B9%E5%BC%8F"><span class="nav-number">3.1.</span> <span class="nav-text">传值 方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%A0%E5%BC%95%E7%94%A8-%E6%96%B9%E5%BC%8F"><span class="nav-number">3.2.</span> <span class="nav-text">传引用 方式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-%E4%B8%AD%E4%BC%A0%E5%8F%82%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="nav-number">4.</span> <span class="nav-text">Java 中传参的方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9E%E5%BD%92%E6%AD%A3%E9%A2%98"><span class="nav-number">5.</span> <span class="nav-text">回归正题</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Utokato"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Utokato</p>
+  <div class="site-description" itemprop="description">The future's not ours to see</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Utokato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Utokato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:utokato@outlook.com" title="E-Mail → mailto:utokato@outlook.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-cube"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Utokato</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
